@@ -1,11 +1,9 @@
 #include <openvdb/openvdb.h>
 #include <openvdb/tools/MeshToVolume.h>
 #include <openvdb/tools/VolumeToMesh.h>
-#include <openvdb/tools/LevelSetRebuild.h>
 
 #include <cmath>
 #include <vector>
-#include <cstdio>
 
 namespace loopsolid {
 
@@ -22,7 +20,6 @@ void offsetMesh(
     if (voxelSize <= 0.0f) {
         voxelSize = std::abs(offset) / 3.0f;
     }
-    /*
     float halfWidth = 3.0f;
 
     auto transform =
@@ -34,42 +31,7 @@ void offsetMesh(
 
     for (auto it = sdf->beginValueOn(); it; ++it) {
         it.setValue(*it - offset);
-    }*/
-
-    // 1. How far the narrow band extends *in world units*
-    float halfWidth =
-        voxelSize *
-        std::ceil(1.2f * (std::abs(offset) / voxelSize + 2.0f));
-
-    std::printf(
-        "[offsetMesh] offset=%f voxelSize=%f halfWidth=%f\n",
-         offset, voxelSize, halfWidth
-    );
-    
-    // 2. Build transform
-    auto transform =
-        openvdb::math::Transform::createLinearTransform(voxelSize);
-
-    // 3. Mesh → signed distance field (SDF)
-    openvdb::FloatGrid::Ptr sdf =
-        openvdb::tools::meshToSignedDistanceField<openvdb::FloatGrid>(
-            *transform,
-            inVerts,
-            inTris,
-            {},               // no per-vertex velocities
-            halfWidth,
-            halfWidth);
-
-    // (Optional but recommended)
-    sdf->setGridClass(openvdb::GRID_LEVEL_SET);
-
-    // 4. Offset the level set (offset is in *world units*)
-    openvdb::tools::levelSetRebuild(
-        *sdf,
-        offset,    // positive → grow, negative → shrink
-        halfWidth, // exterior narrow band width (world units)
-        halfWidth  // interior narrow band width (world units)
-    );
+    }
 
     std::vector<openvdb::Vec4I> outQuads;
     openvdb::tools::volumeToMesh(*sdf, outVerts, outTris, outQuads, 0.0, 0.0, false);
