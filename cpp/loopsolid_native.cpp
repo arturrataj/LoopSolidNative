@@ -12,8 +12,12 @@ namespace loopsolid {
 void offsetMesh(
     const std::vector<openvdb::Vec3s>& inVerts,
     const std::vector<openvdb::Vec3I>& inTris,
-    float offset,
     float voxelSize,
+    int gaussianItBefore,
+    float gaussianRBefore,
+    float offset,
+    int gaussianItAfter,
+    float gaussianRAfter,
     std::vector<openvdb::Vec3s>& outVerts,
     std::vector<openvdb::Vec3I>& outTris);
 } // namespace loopsolid
@@ -94,8 +98,12 @@ static int meshOpCreate(
 
         MeshResult* result = new MeshResult();
         op(inVerts, inTris,
-           static_cast<float>(params->offset),
            static_cast<float>(params->voxelSize),
+           static_cast<int>(params->gaussianItBefore),
+           static_cast<float>(params->gaussianRBefore),
+           static_cast<float>(params->offset),
+           static_cast<int>(params->gaussianItAfter),
+           static_cast<float>(params->gaussianRAfter),
            result->verts, result->tris);
 
         *outVertCount = static_cast<int>(result->verts.size());

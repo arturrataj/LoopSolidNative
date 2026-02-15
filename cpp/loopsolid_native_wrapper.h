@@ -6,8 +6,12 @@
 //   void converter(
 //       const std::vector<openvdb::Vec3s>& inVerts,
 //       const std::vector<openvdb::Vec3I>& inTris,
-//       float param,
 //       float voxelSize,
+//       int gaussianItBefore,
+//       float gaussianRBefore,
+//       float offset,
+//       int gaussianItAfter,
+//       float gaussianRAfter,
 //       std::vector<openvdb::Vec3s>& outVerts,
 //       std::vector<openvdb::Vec3I>& outTris);
 //

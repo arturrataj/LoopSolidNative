@@ -13,8 +13,12 @@ typedef struct {
 } LS_Mesh;
 
 typedef struct {
-    double offset;
     double voxelSize;
+    int gaussianItBefore;
+    double gaussianRBefore;
+    double offset;
+    int gaussianItAfter;
+    double gaussianRAfter;
 } LS_OffsetParams;
 
 /* Convenience macro for declaring the handle-based API.
